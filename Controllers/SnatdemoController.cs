@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +10,6 @@ namespace SnatExhaustionDemo.Controllers
     [Route("[controller]")]
     public class SnatExhaustionDemoController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<SnatExhaustionDemoController> _logger;
         private readonly IAzureFunctionService _azureFunctionService;
         private readonly IConfiguration _configuration;

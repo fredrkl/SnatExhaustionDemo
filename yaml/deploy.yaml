@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    linkerd.io/inject: enabled
+  name: snatexhaustiondemo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snatdemo
+  namespace: snatexhaustiondemo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: snatdemo
+  template:
+    metadata:
+      labels:
+        app: snatdemo
+    spec:
+      containers:
+      - image: fredrkl/snatexhaustiondemo:0.3.0
+        name: snatdemo
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: AzureFunctionOptions__BaseUrl
+          valueFrom:
+            secretKeyRef:
+              name: externalcredentials
+              key: azureFunctionBaseUrl
+        - name: AzureFunctionOptions__xfunctionskey
+          valueFrom:
+            secretKeyRef:
+              name: externalcredentials
+              key: azureFunctionXFunctionsKey
+        securityContext:
+          allowPrivilegeEscalation: false
+      securityContext:
+        runAsUser: 2000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+  name: snatdemoservice
+  namespace: snatexhaustiondemo
+  labels:
+    monitoring: metrics
+spec:
+  type: LoadBalancer
+  selector:
+    app: snatdemo
+  ports:
+  - name: web
+    port:  8080
+    targetPort:  8080
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: externalcredentials
+  namespace: snatexhaustiondemo
+data:
+  azureFunctionBaseUrl:
+  azureFunctionXFunctionsKey:

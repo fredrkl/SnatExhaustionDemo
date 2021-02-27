@@ -15,7 +15,7 @@ namespace SnatExhaustionDemo
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls(new string[]{"http://localhost:8080"});
+                    webBuilder.UseUrls(new string[]{"http://*:8080"});
                 });
     }
 }
