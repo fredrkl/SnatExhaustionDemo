@@ -1,0 +1,1 @@
+k6 cloud -d 50s -u 10 scriptbadsnat.js
